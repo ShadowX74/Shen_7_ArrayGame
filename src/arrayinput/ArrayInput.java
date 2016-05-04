@@ -96,8 +96,8 @@ public class ArrayInput {
 //                }
 //            }
             
-            for (int i = 0; i <= map[0].length - 1 && i < x + 10 && i < x - 10; i++) {
-                for (int j = 0; j <= map[1].length - 1 && j < y + 10 && j < y - 10; j++) {
+            for (int i = x - 10; i <= map[0].length - 1 && i < x + 10 && i < x - 10; i++) {
+                for (int j = y - 10; j <= map[1].length - 1 && j < y + 10 && j < y - 10; j++) {
                     if (j < map[1].length - 1 || j < y + 10) {
                         if (map[i][j] != '@' && map[i][j] != '*' && map[i][j] != 'T' && map[i][j] != 'E') {
                             System.out.print(". ");
