@@ -33,7 +33,8 @@ public class ArrayInput {
     
     public static void game() {
         //creating array map
-        char[][] map = new char[501][501];
+        char[][] map = new char[21][21];
+//        char[][] map = new char[501][501];
         int x = 10;
         int y = 10;
 
@@ -78,27 +79,9 @@ public class ArrayInput {
             map[x][y] = '@';
             map[enemyX][enemyY] = 'E';
             
-//            for (int i = 0; i <= map[0].length - 1; i++) {
-//                for (int j = 0; j <= map[1].length - 1; j++) {
-//                    if (j < map[1].length - 1) {
-//                        if (map[i][j] != '@' && map[i][j] != '*' && map[i][j] != 'T' && map[i][j] != 'E') {
-//                            System.out.print(". ");
-//                        } else {
-//                            System.out.print(map[i][j]  + " ");
-//                        }
-//                    } else {
-//                        if (map[i][j] != '@' && map[i][j] != '*' && map[i][j] != 'T' && map[i][j] != 'E') {
-//                            System.out.println(". ");
-//                        } else {
-//                            System.out.println(map[i][j] + " ");
-//                        }
-//                    }
-//                }
-//            }
-            
-            for (int i = x - 10; i <= map[0].length - 1 && i < x + 10 && i < x - 10; i++) {
-                for (int j = y - 10; j <= map[1].length - 1 && j < y + 10 && j < y - 10; j++) {
-                    if (j < map[1].length - 1 || j < y + 10) {
+            for (int i = 0; i <= map[0].length - 1; i++) {
+                for (int j = 0; j <= map[1].length - 1; j++) {
+                    if (j < map[1].length - 1) {
                         if (map[i][j] != '@' && map[i][j] != '*' && map[i][j] != 'T' && map[i][j] != 'E') {
                             System.out.print(". ");
                         } else {
@@ -113,6 +96,24 @@ public class ArrayInput {
                     }
                 }
             }
+            
+//            for (int i = x - 10; i <= map[0].length - 1 && i < x + 10 && i < x - 10; i++) {
+//                for (int j = y - 10; j <= map[1].length - 1 && j < y + 10 && j < y - 10; j++) {
+//                    if (j < map[1].length - 1 || j < y + 10) {
+//                        if (map[i][j] != '@' && map[i][j] != '*' && map[i][j] != 'T' && map[i][j] != 'E') {
+//                            System.out.print(". ");
+//                        } else {
+//                            System.out.print(map[i][j]  + " ");
+//                        }
+//                    } else {
+//                        if (map[i][j] != '@' && map[i][j] != '*' && map[i][j] != 'T' && map[i][j] != 'E') {
+//                            System.out.println(". ");
+//                        } else {
+//                            System.out.println(map[i][j] + " ");
+//                        }
+//                    }
+//                }
+//            }
 
             map[x][y] = '.';
             map[enemyX][enemyY] = '.';
@@ -143,13 +144,14 @@ public class ArrayInput {
                 enemyY -= 1;
             }
             
-            if (x >= 20) {
+            if (x > 20) {
                 x = 0;
-            } else if (x <= 0) {
+            } else if (x < 0) {
                 x = 20;
-            } else if (y >= 20) {
+            }
+            if (y >= 20) {
                 y = 0;
-            } else if (y <= 0) {
+            } else if (y < 0) {
                 y = 20;
             }
             
