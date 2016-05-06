@@ -17,7 +17,10 @@ public class ArrayInput {
     static Scanner scan = new Scanner(System.in);
     static Random rand = new Random();
     static boolean notWinorLose = true;
-
+    //creating array map
+    static char[][] map = new char[21][21];
+//    static char[][] map = new char[501][501];
+    
     public static void main(String[] args) {
         boolean play = true;
         while (play) {
@@ -32,9 +35,7 @@ public class ArrayInput {
     }
     
     public static void game() {
-        //creating array map
-        char[][] map = new char[21][21];
-//        char[][] map = new char[501][501];
+        //player x and y
         int x = 10;
         int y = 10;
 
