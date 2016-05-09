@@ -20,8 +20,6 @@ public class ArrayInput {
     static int enemy2Y = rand.nextInt(50);
     static int x = 25;
     static int y = 25;
-    static int chestX = rand.nextInt(50);
-    static int chestY = rand.nextInt(50);
     static int[][] traps = new int[5][2];
     static int[][] chests = new int[3][2];
     static boolean enemyAlive = true;
@@ -35,9 +33,9 @@ public class ArrayInput {
     
     public static void game() {
         intro();
-        traps();
-        chests();
         while (play) {
+            traps();
+            chests();
             while (play) {
                 playGame();
             }
@@ -48,7 +46,7 @@ public class ArrayInput {
     private static void traps() {
         for (int[] array : traps) {
             for (int i = 0; i < array.length; i++) {
-                array[i] = rand.nextInt(50) + 1;
+                array[i] = rand.nextInt(49) + 1;
             }
         }
     }
@@ -56,7 +54,7 @@ public class ArrayInput {
     private static void chests() {
         for (int[] array : chests) {
             for (int i = 0; i < array.length; i++) {
-                array[i] = rand.nextInt(50) + 1;
+                array[i] = rand.nextInt(49) + 1;
             }
         }
     }
@@ -100,6 +98,8 @@ public class ArrayInput {
             if (isDead(x, enemy2X, y, enemy2Y) == false) {
                 play = false;
             }
+            
+            isTrapped(x, y); 
             
             if (healthDead()) {
                 play = false;
@@ -191,13 +191,16 @@ public class ArrayInput {
 "   |_|\\___/ \\__,_|  \\__, |\\___/ \\__|  \\___\\__,_|\\__,_|\\__, |_| |_|\\__| |_.__/ \\__, |  \\__|_| |_|\\___|  \\___|_| |_|\\___|_| |_| |_|\\__, (_)   |_| \\___/ \\___/  |_____\\___/|____/ |_|  \n" +
 "                    |___/                             |___/                   |___/                                              |___/                                              ");
     	}
+    	return live;
+    }
+    
+    private static void isTrapped(int pX, int pY) {
         for (int[] trap : traps) {
             if (pX == trap[0] + 1 && pY == trap[1] + 1) {
                 System.out.println("Ouch! -50 health!");
                 health -= 50;
             }
     	}
-    	return live;
     }
         
     private static void enemyAlive() {
@@ -251,6 +254,8 @@ public class ArrayInput {
     private static void chestFound(int pX, int pY) {
         for (int[] chest : chests) {
             if (pX == chest[0] + 1 && pY == chest[1] + 1) {
+                chest[0] = 0;
+                chest[1] = 0; 
                 System.out.println("You found a chest. + 5 Points");
                 points += 5;
             }
@@ -272,6 +277,15 @@ public class ArrayInput {
         if (answer.toLowerCase().contains("y")) {
             play = true;
             points = 0;
+            health = 100;
+            enemyAlive = true;
+            enemy2Alive = true;
+            enemyX = rand.nextInt(50);
+            enemyY = rand.nextInt(50);
+            enemy2X = rand.nextInt(50);
+            enemy2Y = rand.nextInt(50);
+            x = 25;
+            y = 25;
         }
     }
     
