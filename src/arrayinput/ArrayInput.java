@@ -9,6 +9,7 @@ import java.util.Scanner;
 import java.util.Random;
 
 public class ArrayInput {
+    //ADD FAKE TRAP THAT LOOKS LIKE A CHEST
 
     static Scanner scan = new Scanner(System.in);
     static Random rand = new Random();
