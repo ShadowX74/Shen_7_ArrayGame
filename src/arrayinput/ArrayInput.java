@@ -14,19 +14,22 @@ public class ArrayInput {
     static Scanner scan = new Scanner(System.in);
     static Random rand = new Random();
     static boolean play = true;
+    
     static char[][] map = new char[51][51];
+    static int[][] traps = new int[5][2];
+    static int[][] chests = new int[3][2];
+    
     static int enemyX = rand.nextInt(50);
     static int enemyY = rand.nextInt(50);
     static int enemy2X = rand.nextInt(50);
     static int enemy2Y = rand.nextInt(50);
     static int x = 25;
     static int y = 25;
-    static int[][] traps = new int[5][2];
-    static int[][] chests = new int[3][2];
-    static boolean enemyAlive = true;
-    static boolean enemy2Alive = true;
     static int points = 0;
     static int health = 100;
+    
+    static boolean enemyAlive = true;
+    static boolean enemy2Alive = true;
 
     public static void main(String[] args) {
         game();
@@ -90,7 +93,7 @@ public class ArrayInput {
         }
 
         move();
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
         if (isDead(x, enemyX, y, enemyY) == false) {
             play = false;
