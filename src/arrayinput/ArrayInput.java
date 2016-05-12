@@ -23,6 +23,8 @@ public class ArrayInput {
     static int enemyY = rand.nextInt(50);
     static int enemy2X = rand.nextInt(50);
     static int enemy2Y = rand.nextInt(50);
+    static int trappedChestX = rand.nextInt(50);
+    static int trappedChestY = rand.nextInt(50);
     static int x = 25;
     static int y = 25;
     static int points = 0;
@@ -72,6 +74,8 @@ public class ArrayInput {
                     map[i][j] = 'E';
                 } else if (i == 0 || i == 50 || j == 0 || j == 50) {
                     map[i][j] = 'X';
+                } else if (i == trappedChestX && j == trappedChestY) {
+                    map[i][j] = 'C';
                 } else {
                     map[i][j] = '.';
                 }
