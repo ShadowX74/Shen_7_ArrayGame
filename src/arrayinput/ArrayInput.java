@@ -25,10 +25,7 @@ public class ArrayInput {
     static int enemy2Y = rand.nextInt(50);
     static int trappedChestX = rand.nextInt(50);
     static int trappedChestY = rand.nextInt(50);
-    static int x = 25;
-    static int y = 25;
-    static int points = 0;
-    static int health = 100;
+    static Player player= new Player("Hero", 25, 25, '@');
     
     static boolean enemyAlive = true;
     static boolean enemy2Alive = true;
@@ -68,18 +65,6 @@ public class ArrayInput {
     public static void playGame() {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
-                if (i == x - 1 && j == y - 1) {
-                    map[i][j] = '@';
-                } else if ((i == enemyX - 1 && j == enemyY - 1) || (i == enemy2X - 1 && j == enemy2Y - 1)) {
-                    map[i][j] = 'E';
-                } else if (i == 0 || i == 50 || j == 0 || j == 50) {
-                    map[i][j] = 'X';
-                } else if (i == trappedChestX && j == trappedChestY) {
-                    map[i][j] = 'C';
-                } else {
-                    map[i][j] = '.';
-                }
-
                 for (int[] array : chests) {
                     if (i == array[0] && j == array[1]) {
                         map[i][j] = 'T';
@@ -91,6 +76,19 @@ public class ArrayInput {
                         map[i][j] = '*';
                     }
                 }
+                
+                if (i == player.x - 1 && j == player.y - 1) {
+                    map[i][j] = '@';
+                } else if ((i == enemyX - 1 && j == enemyY - 1) || (i == enemy2X - 1 && j == enemy2Y - 1)) {
+                    map[i][j] = 'E';
+                } else if (i == 0 || i == 50 || j == 0 || j == 50) {
+                    map[i][j] = 'X';
+                } else if (i == trappedChestX && j == trappedChestY) {
+                    map[i][j] = 'C';
+                } else {
+                    map[i][j] = '.';
+                }
+                
                 System.out.print(map[i][j] + " ");
             }
             System.out.println("");
@@ -99,21 +97,21 @@ public class ArrayInput {
         move();
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
-        if (isDead(x, enemyX, y, enemyY) == false) {
+        if (isDead(player.x, enemyX, player.y, enemyY) == false) {
             play = false;
         }
 
-        if (isDead(x, enemy2X, y, enemy2Y) == false) {
+        if (isDead(player.x, enemy2X, player.y, enemy2Y) == false) {
             play = false;
         }
 
-        isTrapped(x, y);
+        isTrapped(player.x, player.y);
 
         if (healthDead()) {
             play = false;
         }
 
-        chestFound(x, y);
+        chestFound(player.x, player.y);
 
         if (isWon()) {
             play = false;
@@ -142,23 +140,23 @@ public class ArrayInput {
         System.out.println("What direction would you like to move? (N/E/S/W/NE/SE/NW/SW) Or (Q) to quit.");
         String input = scan.next().toUpperCase();
         if (input.contains("N")) {
-            if (projected(x - 2, y)) {
-                x -= 1;
+            if (projected(player.x - 2, player.y)) {
+                player.x -= 1;
             }
         }
         if (input.contains("E")) {
-            if (projected(y + 2, x)) {
-                y += 1;
+            if (projected(player.y + 2, player.x)) {
+                player.y += 1;
             }
         }
         if (input.contains("S")) {
-            if (projected(x + 2, y)) {
-                x += 1;
+            if (projected(player.x + 2, player.y)) {
+                player.x += 1;
             }
         }
         if (input.contains("W")) {
-            if (projected(y - 2, x)) {
-                y -= 1;
+            if (projected(player.y - 2, player.x)) {
+                player.y -= 1;
             }
         }
         if (input.contains("Q")) {
@@ -179,13 +177,13 @@ public class ArrayInput {
     }
 
     private static void moveEnemy() {
-        enemyX = checkEnemyPosition(x, enemyX);
-        enemyY = checkEnemyPosition(y, enemyY);
+        enemyX = checkEnemyPosition(player.x, enemyX);
+        enemyY = checkEnemyPosition(player.y, enemyY);
     }
 
     private static void moveEnemy2() {
-        enemy2X = checkEnemyPosition(x, enemy2X);
-        enemy2Y = checkEnemyPosition(y, enemy2Y);
+        enemy2X = checkEnemyPosition(player.x, enemy2X);
+        enemy2Y = checkEnemyPosition(player.y, enemy2Y);
     }
 
     private static boolean isDead(int pX, int eX, int pY, int eY) {
@@ -206,7 +204,7 @@ public class ArrayInput {
         for (int[] trap : traps) {
             if (pX == trap[0] + 1 && pY == trap[1] + 1) {
                 System.out.println("Ouch! -50 health!");
-                health -= 50;
+                player.health -= 50;
             }
         }
     }
@@ -228,7 +226,7 @@ public class ArrayInput {
     }
 
     private static boolean healthDead() {
-        if (health <= 0) {
+        if (player.health <= 0) {
             System.out.println(" __   __                _                            _                         _                       ____    _    __  __ _____    _____     _______ ____  \n"
                     + " \\ \\ / /__  _   _   ___| |_ ___ _ __  _ __   ___  __| |   ___  _ __     __ _  | |_ _ __ __ _ _ __     / ___|  / \\  |  \\/  | ____|  / _ \\ \\   / / ____|  _ \\ \n"
                     + "  \\ V / _ \\| | | | / __| __/ _ \\ '_ \\| '_ \\ / _ \\/ _` |  / _ \\| '_ \\   / _` | | __| '__/ _` | '_ \\   | |  _  / _ \\ | |\\/| |  _|   | | | \\ \\ / /|  _| | |_) |\n"
@@ -241,7 +239,7 @@ public class ArrayInput {
     }
 
     private static boolean isWon() {
-        if (points == 15) {
+        if (player.score == 15) {
             System.out.println(" __   __             __                       _         _ _   _   _                 _               _                         _                                      _ _ \n"
                     + " \\ \\ / /__  _   _   / _| ___  _   _ _ __   __| |   __ _| | | | |_| |__   ___    ___| |__   ___  ___| |_ ___    __ _ _ __   __| |   ___  ___  ___ __ _ _ __   ___  __| | |\n"
                     + "  \\ V / _ \\| | | | | |_ / _ \\| | | | '_ \\ / _` |  / _` | | | | __| '_ \\ / _ \\  / __| '_ \\ / _ \\/ __| __/ __|  / _` | '_ \\ / _` |  / _ \\/ __|/ __/ _` | '_ \\ / _ \\/ _` | |\n"
@@ -265,7 +263,7 @@ public class ArrayInput {
                 chest[0] = 0;
                 chest[1] = 0;
                 System.out.println("You found a chest. + 5 Points");
-                points += 5;
+                player.score += 5;
             }
         }
     }
@@ -284,16 +282,16 @@ public class ArrayInput {
         String answer = scan.next();
         if (answer.toLowerCase().contains("y")) {
             play = true;
-            points = 0;
-            health = 100;
+            player.score = 0;
+            player.health = 100;
             enemyAlive = true;
             enemy2Alive = true;
             enemyX = rand.nextInt(50);
             enemyY = rand.nextInt(50);
             enemy2X = rand.nextInt(50);
             enemy2Y = rand.nextInt(50);
-            x = 25;
-            y = 25;
+            player.x = 25;
+            player.y = 25;
         }
     }
 
