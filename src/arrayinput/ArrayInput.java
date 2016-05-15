@@ -65,18 +65,6 @@ public class ArrayInput {
     public static void playGame() {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
-                for (int[] array : chests) {
-                    if (i == array[0] && j == array[1]) {
-                        map[i][j] = 'T';
-                    }
-                }
-
-                for (int[] array : traps) {
-                    if (i == array[0] && j == array[1]) {
-                        map[i][j] = '*';
-                    }
-                }
-                
                 if (i == player.x - 1 && j == player.y - 1) {
                     map[i][j] = '@';
                 } else if ((i == enemyX - 1 && j == enemyY - 1) || (i == enemy2X - 1 && j == enemy2Y - 1)) {
@@ -87,6 +75,18 @@ public class ArrayInput {
                     map[i][j] = 'C';
                 } else {
                     map[i][j] = '.';
+                }
+                
+                for (int[] array : chests) {
+                    if (i == array[0] && j == array[1]) {
+                        map[i][j] = 'T';
+                    }
+                }
+
+                for (int[] array : traps) {
+                    if (i == array[0] && j == array[1]) {
+                        map[i][j] = '*';
+                    }
                 }
                 
                 System.out.print(map[i][j] + " ");
@@ -203,6 +203,10 @@ public class ArrayInput {
     private static void isTrapped(int pX, int pY) {
         for (int[] trap : traps) {
             if (pX == trap[0] + 1 && pY == trap[1] + 1) {
+                System.out.println("Ouch! -50 health!");
+                player.health -= 50;
+            }
+            if (pX == trappedChestX + 1 && pY == trappedChestY + 1) {
                 System.out.println("Ouch! -50 health!");
                 player.health -= 50;
             }

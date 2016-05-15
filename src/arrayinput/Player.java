@@ -17,7 +17,7 @@ public class Player {
     int skillz = 0;
     int level = 1;
 
-    int x, y;
+    int x, y, projectedX, projectedY;
     String name;
     String weapon;
     char symbol = 'U';
