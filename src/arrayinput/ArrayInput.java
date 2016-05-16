@@ -23,8 +23,8 @@ public class ArrayInput {
     static int enemyY = rand.nextInt(50);
     static int enemy2X = rand.nextInt(50);
     static int enemy2Y = rand.nextInt(50);
-    static int trappedChestX = rand.nextInt(50);
-    static int trappedChestY = rand.nextInt(50);
+    static int trappedChestX = 25;//rand.nextInt(50);
+    static int trappedChestY = 25;//rand.nextInt(50);
     static Player player= new Player("Hero", 25, 25, '@');
     
     static boolean enemyAlive = true;
@@ -205,7 +205,7 @@ public class ArrayInput {
             if (pX == trap[0] + 1 && pY == trap[1] + 1) {
                 System.out.println("Ouch! -50 health!");
                 player.health -= 50;
-            }
+            } 
             if (pX == trappedChestX + 1 && pY == trappedChestY + 1) {
                 System.out.println("Ouch! -50 health!");
                 player.health -= 50;
