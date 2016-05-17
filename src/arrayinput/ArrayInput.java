@@ -16,8 +16,9 @@ public class ArrayInput {
     static boolean play = true;
     
     static char[][] map = new char[51][51];
-    static int[][] traps = new int[5][2];
+    static int[][] traps = new int[7][2];
     static int[][] chests = new int[3][2];
+    static int[][] enemies = new int[3][2];
     
     static int enemyX = rand.nextInt(50);
     static int enemyY = rand.nextInt(50);
@@ -25,7 +26,7 @@ public class ArrayInput {
     static int enemy2Y = rand.nextInt(50);
     static int trappedChestX = 25;//rand.nextInt(50);
     static int trappedChestY = 25;//rand.nextInt(50);
-    static Player player= new Player("Hero", 25, 25, '@');
+    static Player player= new Player("Hero", 25, 25, 'U');
     
     static boolean enemyAlive = true;
     static boolean enemy2Alive = true;
@@ -39,6 +40,7 @@ public class ArrayInput {
         while (play) {
             traps();
             chests();
+            enemy();
             while (play) {
                 playGame();
             }
@@ -61,12 +63,20 @@ public class ArrayInput {
             }
         }
     }
+    
+    private static void enemy() {
+        for (int[] array : enemies) {
+            for (int i = 0; i < array.length; i++) {
+                array[i] = rand.nextInt(49) + 1;
+            }
+        }
+    }
 
     public static void playGame() {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 if (i == player.x - 1 && j == player.y - 1) {
-                    map[i][j] = '@';
+                    map[i][j] = player.symbol;
                 } else if ((i == enemyX - 1 && j == enemyY - 1) || (i == enemy2X - 1 && j == enemy2Y - 1)) {
                     map[i][j] = 'E';
                 } else if (i == 0 || i == 50 || j == 0 || j == 50) {
@@ -79,13 +89,27 @@ public class ArrayInput {
                 
                 for (int[] array : chests) {
                     if (i == array[0] && j == array[1]) {
-                        map[i][j] = 'T';
+                        if (0 == array[0] && 0 == array[1]) {
+                            map[i][j] = 'X';
+                        } else {
+                            map[i][j] = 'T';
+                        }
                     }
                 }
 
                 for (int[] array : traps) {
                     if (i == array[0] && j == array[1]) {
                         map[i][j] = '*';
+                    }
+                }
+                
+                for (int[] array : enemies) {
+                    if (i == array[0] && j == array[1]) {
+                        if (0 == array[0] && 0 == array[1]) {
+                            map[i][j] = 'X';
+                        } else {
+                            map[i][j] = 'E';
+                        }
                     }
                 }
                 
@@ -120,14 +144,14 @@ public class ArrayInput {
 
     private static void move() {
         movePlayer();
-        enemyAlive();
+        enemyAlive(enemyX, enemyY, 1);
+        enemyAlive(enemy2X, enemy2Y, 2);
         if (enemyAlive) {
             moveEnemy();
         } else {
             enemyX = 0;
             enemyY = 0;
         }
-        enemy2Alive();
         if (enemy2Alive) {
             moveEnemy2();
         } else {
@@ -213,18 +237,16 @@ public class ArrayInput {
         }
     }
 
-    private static void enemyAlive() {
+    private static void enemyAlive(int eX, int eY, int is1or2) {
         for (int[] trap : traps) {
-            if (enemyX == trap[0] + 1 && enemyY == trap[1] + 1) {
-                enemyAlive = false;
-            }
-        }
-    }
-
-    private static void enemy2Alive() {
-        for (int[] trap : traps) {
-            if (enemy2X == trap[0] + 1 && enemy2Y == trap[1] + 1) {
-                enemy2Alive = false;
+            if (eX == trap[0] + 1 && eY == trap[1] + 1) {
+                System.out.println("You killed an enemy. + 5 Points");
+                player.score += 5;
+                if (is1or2 == 1) {
+                    enemyAlive = false;
+                } else {
+                    enemy2Alive = false;
+                }
             }
         }
     }
@@ -282,6 +304,7 @@ public class ArrayInput {
     }
 
     private static void playAgain() {
+        System.out.println("Score:" + player.score);
         System.out.println("Would you like to play again? (y/n)");
         String answer = scan.next();
         if (answer.toLowerCase().contains("y")) {
