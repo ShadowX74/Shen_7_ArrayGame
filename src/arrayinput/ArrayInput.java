@@ -18,7 +18,6 @@ public class ArrayInput {
     static char[][] map = new char[51][51];
     static int[][] traps = new int[7][2];
     static int[][] chests = new int[3][2];
-    static int[][] enemies = new int[3][2];
     
     static int enemyX = rand.nextInt(50);
     static int enemyY = rand.nextInt(50);
@@ -40,7 +39,6 @@ public class ArrayInput {
         while (play) {
             traps();
             chests();
-            enemy();
             while (play) {
                 playGame();
             }
@@ -58,14 +56,6 @@ public class ArrayInput {
 
     private static void chests() {
         for (int[] array : chests) {
-            for (int i = 0; i < array.length; i++) {
-                array[i] = rand.nextInt(49) + 1;
-            }
-        }
-    }
-    
-    private static void enemy() {
-        for (int[] array : enemies) {
             for (int i = 0; i < array.length; i++) {
                 array[i] = rand.nextInt(49) + 1;
             }
@@ -100,16 +90,6 @@ public class ArrayInput {
                 for (int[] array : traps) {
                     if (i == array[0] && j == array[1]) {
                         map[i][j] = '*';
-                    }
-                }
-                
-                for (int[] array : enemies) {
-                    if (i == array[0] && j == array[1]) {
-                        if (0 == array[0] && 0 == array[1]) {
-                            map[i][j] = 'X';
-                        } else {
-                            map[i][j] = 'E';
-                        }
                     }
                 }
                 
