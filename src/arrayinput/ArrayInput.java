@@ -14,15 +14,13 @@ public class ArrayInput {
     static Scanner scan = new Scanner(System.in);
     static Random rand = new Random();
     static boolean play = true;
+    static Enemy E1, E2, E3;
     
     static char[][] map = new char[51][51];
     static int[][] traps = new int[7][2];
     static int[][] chests = new int[3][2];
-    
-    static int enemyX = rand.nextInt(50);
-    static int enemyY = rand.nextInt(50);
-    static int enemy2X = rand.nextInt(50);
-    static int enemy2Y = rand.nextInt(50);
+    static Enemy[] enemies = {E1, E2, E3};
+
     static int trappedChestX = 25;//rand.nextInt(50);
     static int trappedChestY = 25;//rand.nextInt(50);
     static Player player= new Player("Hero", 25, 25, 'U');
@@ -39,6 +37,7 @@ public class ArrayInput {
         while (play) {
             traps();
             chests();
+            enemies();
             while (play) {
                 playGame();
             }
@@ -61,14 +60,18 @@ public class ArrayInput {
             }
         }
     }
-
+    
+    private static void enemies() {
+        for (int i = 0; i < enemies.length; i ++) {
+            enemies[i] = new Enemy(rand.nextInt(49) + 1,rand.nextInt(49) + 1, 'E');
+        }
+    }
+    
     public static void playGame() {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 if (i == player.x - 1 && j == player.y - 1) {
                     map[i][j] = player.symbol;
-                } else if ((i == enemyX - 1 && j == enemyY - 1) || (i == enemy2X - 1 && j == enemy2Y - 1)) {
-                    map[i][j] = 'E';
                 } else if (i == 0 || i == 50 || j == 0 || j == 50) {
                     map[i][j] = 'X';
                 } else if (i == trappedChestX && j == trappedChestY) {
@@ -93,6 +96,14 @@ public class ArrayInput {
                     }
                 }
                 
+                for (Enemy e : enemies) {
+                    if (e.isAlive) {
+                        if (i == e.x && j == e.y) {
+                            map[i][j] = 'E';
+                        }
+                    }
+                }
+                
                 System.out.print(map[i][j] + " ");
             }
             System.out.println("");
@@ -101,11 +112,11 @@ public class ArrayInput {
         move();
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 
-        if (isDead(player.x, enemyX, player.y, enemyY) == false) {
+        if (isDead(player.x, player.y) == false) {
             play = false;
         }
 
-        if (isDead(player.x, enemy2X, player.y, enemy2Y) == false) {
+        if (isDead(player.x, player.y) == false) {
             play = false;
         }
 
@@ -124,19 +135,18 @@ public class ArrayInput {
 
     private static void move() {
         movePlayer();
-        enemyAlive(enemyX, enemyY, 1);
-        enemyAlive(enemy2X, enemy2Y, 2);
-        if (enemyAlive) {
-            moveEnemy();
-        } else {
-            enemyX = 0;
-            enemyY = 0;
+        
+        for (Enemy e : enemies) {
+            e.isAlive = enemyAlive(e.x, e.y);
         }
-        if (enemy2Alive) {
-            moveEnemy2();
-        } else {
-            enemy2X = 0;
-            enemy2Y = 0;
+        
+        for (Enemy e : enemies) {
+            if (e.isAlive) {
+                moveEnemy();
+            } else {
+                e.x = 0;
+                e.y = 0;
+            }
         }
     }
 
@@ -181,27 +191,25 @@ public class ArrayInput {
     }
 
     private static void moveEnemy() {
-        enemyX = checkEnemyPosition(player.x, enemyX);
-        enemyY = checkEnemyPosition(player.y, enemyY);
+        for (Enemy e : enemies) {
+            e.x = checkEnemyPosition(player.x, e.x);
+            e.y = checkEnemyPosition(player.y, e.y);
+        }
     }
 
-    private static void moveEnemy2() {
-        enemy2X = checkEnemyPosition(player.x, enemy2X);
-        enemy2Y = checkEnemyPosition(player.y, enemy2Y);
-    }
-
-    private static boolean isDead(int pX, int eX, int pY, int eY) {
-        boolean live = true;
-        if (pX == eX && pY == eY) {
-            live = false;
-            System.out.println(" __   __                        _                           _     _     _             _   _                                               __   _____  _   _   _     ___  ____ _____ \n"
+    private static boolean isDead(int pX, int pY) {
+        for (Enemy e : enemies) {
+            if (e.x == pX && e.y == pY) {
+                System.out.println(" __   __                        _                           _     _     _             _   _                                               __   _____  _   _   _     ___  ____ _____ \n"
                     + " \\ \\ / /__  _   _    __ _  ___ | |_    ___ __ _ _   _  __ _| |__ | |_  | |__  _   _  | |_| |__   ___    ___ _ __   ___ _ __ ___  _   _    \\ \\ / / _ \\| | | | | |   / _ \\/ ___|_   _|\n"
                     + "  \\ V / _ \\| | | |  / _` |/ _ \\| __|  / __/ _` | | | |/ _` | '_ \\| __| | '_ \\| | | | | __| '_ \\ / _ \\  / _ \\ '_ \\ / _ \\ '_ ` _ \\| | | |    \\ V / | | | | | | | |  | | | \\___ \\ | |  \n"
                     + "   | | (_) | |_| | | (_| | (_) | |_  | (_| (_| | |_| | (_| | | | | |_  | |_) | |_| | | |_| | | |  __/ |  __/ | | |  __/ | | | | | |_| |_    | || |_| | |_| | | |__| |_| |___) || |  \n"
                     + "   |_|\\___/ \\__,_|  \\__, |\\___/ \\__|  \\___\\__,_|\\__,_|\\__, |_| |_|\\__| |_.__/ \\__, |  \\__|_| |_|\\___|  \\___|_| |_|\\___|_| |_| |_|\\__, (_)   |_| \\___/ \\___/  |_____\\___/|____/ |_|  \n"
                     + "                    |___/                             |___/                   |___/                                              |___/                                              ");
+                return false;
+            }
         }
-        return live;
+        return true;
     }
 
     private static void isTrapped(int pX, int pY) {
@@ -217,18 +225,15 @@ public class ArrayInput {
         }
     }
 
-    private static void enemyAlive(int eX, int eY, int is1or2) {
+    private static boolean enemyAlive(int eX, int eY) {
         for (int[] trap : traps) {
             if (eX == trap[0] + 1 && eY == trap[1] + 1) {
                 System.out.println("You killed an enemy. + 5 Points");
                 player.score += 5;
-                if (is1or2 == 1) {
-                    enemyAlive = false;
-                } else {
-                    enemy2Alive = false;
-                }
+                return false;
             }
         }
+        return true;
     }
 
     private static boolean healthDead() {
@@ -293,10 +298,6 @@ public class ArrayInput {
             player.health = 100;
             enemyAlive = true;
             enemy2Alive = true;
-            enemyX = rand.nextInt(50);
-            enemyY = rand.nextInt(50);
-            enemy2X = rand.nextInt(50);
-            enemy2Y = rand.nextInt(50);
             player.x = 25;
             player.y = 25;
         }

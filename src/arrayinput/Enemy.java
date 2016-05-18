@@ -12,12 +12,13 @@ package arrayinput;
 public class Enemy {
     int x, y;
     int health = 100;
-    boolean isALive = true;
-    char symbol = 'P';
+    boolean isAlive;
+    char symbol = 'E';
     
     Enemy(int x, int y, char symbol) {
         this.x = x;
         this.y = y;
         this.symbol = symbol;
+        isAlive = true;
     }
 }

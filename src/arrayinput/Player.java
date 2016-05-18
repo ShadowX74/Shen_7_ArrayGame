@@ -16,6 +16,7 @@ public class Player {
     int power = 5;
     int skillz = 0;
     int level = 1;
+    int xp = 0;
 
     int x, y, projectedX, projectedY;
     String name;
