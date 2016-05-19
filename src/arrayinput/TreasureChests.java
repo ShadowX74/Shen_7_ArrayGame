@@ -11,11 +11,13 @@ package arrayinput;
  */
 public class TreasureChests {
     int x, y;
+    boolean isLost;
     String powerUp;
     
     TreasureChests(int a, int b, String power) {
         this.x = a;
         this.y = b;
         this.powerUp = power;
+        this.isLost = true;
     }
 }

@@ -10,6 +10,16 @@ import java.util.Random;
 
 public class ArrayInput {
     //ADD FAKE TRAP THAT LOOKS LIKE A CHEST
+    
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_BLACK = "\u001B[30m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_PURPLE = "\u001B[35m";
+    public static final String ANSI_CYAN = "\u001B[36m";
+    public static final String ANSI_WHITE = "\u001B[37m";
 
     static Scanner scan = new Scanner(System.in);
     static Random rand = new Random();
@@ -35,17 +45,17 @@ public class ArrayInput {
     public static void game() {
         intro();
         while (play) {
-            traps();
-            chests();
-            enemies();
+            makeTraps();
+            makeChests();
+            makeEnemies();
             while (play) {
-                playGame();
+                runGame();
             }
             playAgain();
         }
     }
 
-    private static void traps() {
+    private static void makeTraps() {
         for (int[] array : traps) {
             for (int i = 0; i < array.length; i++) {
                 array[i] = rand.nextInt(49) + 1;
@@ -53,7 +63,7 @@ public class ArrayInput {
         }
     }
 
-    private static void chests() {
+    private static void makeChests() {
         for (int[] array : chests) {
             for (int i = 0; i < array.length; i++) {
                 array[i] = rand.nextInt(49) + 1;
@@ -61,13 +71,13 @@ public class ArrayInput {
         }
     }
     
-    private static void enemies() {
+    private static void makeEnemies() {
         for (int i = 0; i < enemies.length; i ++) {
             enemies[i] = new Enemy(rand.nextInt(49) + 1,rand.nextInt(49) + 1, 'E');
         }
     }
     
-    public static void playGame() {
+    private static void runGame() {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 if (i == player.x - 1 && j == player.y - 1) {
@@ -99,7 +109,7 @@ public class ArrayInput {
                 for (Enemy e : enemies) {
                     if (e.isAlive) {
                         if (i == e.x && j == e.y) {
-                            map[i][j] = 'E';
+                            map[i][j] = e.symbol;
                         }
                     }
                 }
@@ -302,12 +312,12 @@ public class ArrayInput {
     }
 
     private static void intro() {
-        System.out.println(" __        __   _                            _          _   _            _____                                       _                         \n"
-                + " \\ \\      / /__| | ___ ___  _ __ ___   ___  | |_ ___   | |_| |__   ___  |_   _| __ ___  __ _ ___ _   _ _ __ ___     / \\   _ __ _ __ __ _ _   _ \n"
-                + "  \\ \\ /\\ / / _ \\ |/ __/ _ \\| '_ ` _ \\ / _ \\ | __/ _ \\  | __| '_ \\ / _ \\   | || '__/ _ \\/ _` / __| | | | '__/ _ \\   / _ \\ | '__| '__/ _` | | | |\n"
-                + "   \\ V  V /  __/ | (_| (_) | | | | | |  __/ | || (_) | | |_| | | |  __/   | || | |  __/ (_| \\__ \\ |_| | | |  __/  / ___ \\| |  | | | (_| | |_| |\n"
-                + "    \\_/\\_/ \\___|_|\\___\\___/|_| |_| |_|\\___|  \\__\\___/   \\__|_| |_|\\___|   |_||_|  \\___|\\__,_|___/\\__,_|_|  \\___| /_/   \\_\\_|  |_|  \\__,_|\\__, |\n"
-                + "                                                                                                                                         |___/ ");
+        System.out.println(ANSI_RED + " __        __   _                            _          _   _            _____                                       _                         \n"
+                + ANSI_RED +" \\ \\      / /__| | ___ ___  _ __ ___   ___  | |_ ___   | |_| |__   ___  |_   _| __ ___  __ _ ___ _   _ _ __ ___     / \\   _ __ _ __ __ _ _   _ \n"
+                + ANSI_RED +"  \\ \\ /\\ / / _ \\ |/ __/ _ \\| '_ ` _ \\ / _ \\ | __/ _ \\  | __| '_ \\ / _ \\   | || '__/ _ \\/ _` / __| | | | '__/ _ \\   / _ \\ | '__| '__/ _` | | | |\n"
+                + ANSI_RED +"   \\ V  V /  __/ | (_| (_) | | | | | |  __/ | || (_) | | |_| | | |  __/   | || | |  __/ (_| \\__ \\ |_| | | |  __/  / ___ \\| |  | | | (_| | |_| |\n"
+                + ANSI_RED +"    \\_/\\_/ \\___|_|\\___\\___/|_| |_| |_|\\___|  \\__\\___/   \\__|_| |_|\\___|   |_||_|  \\___|\\__,_|___/\\__,_|_|  \\___| /_/   \\_\\_|  |_|  \\__,_|\\__, |\n"
+                + ANSI_RED +"                                                                                                                                         |___/ " + ANSI_RESET);
         System.out.println("You have been exploring the depths of the jungle, looking for ruins.");
         System.out.println("You came upon an overgrown tunnel, and stepped inside.");
         System.out.println("As soon as you emerged into a large open space, the tunnel opening collapses.");
