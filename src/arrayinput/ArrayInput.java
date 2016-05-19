@@ -140,14 +140,7 @@ public class ArrayInput {
             e.isAlive = enemyAlive(e.x, e.y);
         }
         
-        for (Enemy e : enemies) {
-            if (e.isAlive) {
-                moveEnemy();
-            } else {
-                e.x = 0;
-                e.y = 0;
-            }
-        }
+        moveEnemy();
     }
 
     private static void movePlayer() {
@@ -192,8 +185,13 @@ public class ArrayInput {
 
     private static void moveEnemy() {
         for (Enemy e : enemies) {
-            e.x = checkEnemyPosition(player.x, e.x);
-            e.y = checkEnemyPosition(player.y, e.y);
+            if (e.isAlive) {
+                e.x = checkEnemyPosition(player.x, e.x);
+                e.y = checkEnemyPosition(player.y, e.y);
+            } else {
+                e.x = 0;
+                e.y = 0;
+            }
         }
     }
 
