@@ -24,15 +24,12 @@ public class ArrayInput {
     static Scanner scan = new Scanner(System.in);
     static Random rand = new Random();
     static boolean play = true;
-    static Enemy E1, E2, E3;
     
     static char[][] map = new char[51][51];
     static int[][] traps = new int[7][2];
     static int[][] chests = new int[3][2];
-    static Enemy[] enemies = {E1, E2, E3};
-
-    static int trappedChestX = 25;//rand.nextInt(50);
-    static int trappedChestY = 25;//rand.nextInt(50);
+    static Enemy[] enemies = new Enemy[3];
+    
     static Player player= new Player("Hero", 25, 25, 'U');
     
     static boolean enemyAlive = true;
@@ -84,8 +81,6 @@ public class ArrayInput {
                     map[i][j] = player.symbol;
                 } else if (i == 0 || i == 50 || j == 0 || j == 50) {
                     map[i][j] = 'X';
-                } else if (i == trappedChestX && j == trappedChestY) {
-                    map[i][j] = 'C';
                 } else {
                     map[i][j] = '.';
                 }
@@ -121,10 +116,6 @@ public class ArrayInput {
 
         move();
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-
-        if (isDead(player.x, player.y) == false) {
-            play = false;
-        }
 
         if (isDead(player.x, player.y) == false) {
             play = false;
@@ -196,8 +187,8 @@ public class ArrayInput {
     private static void moveEnemy() {
         for (Enemy e : enemies) {
             if (e.isAlive) {
-                e.x = checkEnemyPosition(player.x, e.x);
-                e.y = checkEnemyPosition(player.y, e.y);
+                e.x = e.move(player.x, e.x);
+                e.y = e.move(player.y, e.y);
             } else {
                 e.x = 0;
                 e.y = 0;
@@ -207,7 +198,9 @@ public class ArrayInput {
 
     private static boolean isDead(int pX, int pY) {
         for (Enemy e : enemies) {
+            System.out.println("checked one enemy");
             if (e.x == pX && e.y == pY) {
+                System.out.println("dead");
                 System.out.println(" __   __                        _                           _     _     _             _   _                                               __   _____  _   _   _     ___  ____ _____ \n"
                     + " \\ \\ / /__  _   _    __ _  ___ | |_    ___ __ _ _   _  __ _| |__ | |_  | |__  _   _  | |_| |__   ___    ___ _ __   ___ _ __ ___  _   _    \\ \\ / / _ \\| | | | | |   / _ \\/ ___|_   _|\n"
                     + "  \\ V / _ \\| | | |  / _` |/ _ \\| __|  / __/ _` | | | |/ _` | '_ \\| __| | '_ \\| | | | | __| '_ \\ / _ \\  / _ \\ '_ \\ / _ \\ '_ ` _ \\| | | |    \\ V / | | | | | | | |  | | | \\___ \\ | |  \n"
@@ -223,10 +216,6 @@ public class ArrayInput {
     private static void isTrapped(int pX, int pY) {
         for (int[] trap : traps) {
             if (pX == trap[0] + 1 && pY == trap[1] + 1) {
-                System.out.println("Ouch! -50 health!");
-                player.health -= 50;
-            } 
-            if (pX == trappedChestX + 1 && pY == trappedChestY + 1) {
                 System.out.println("Ouch! -50 health!");
                 player.health -= 50;
             }
@@ -285,15 +274,6 @@ public class ArrayInput {
                 player.score += 5;
             }
         }
-    }
-
-    private static int checkEnemyPosition(int player, int enemy) {
-        if (enemy < player) {
-            enemy += 1;
-        } else if (enemy > player) {
-            enemy -= 1;
-        }
-        return enemy;
     }
 
     private static void playAgain() {

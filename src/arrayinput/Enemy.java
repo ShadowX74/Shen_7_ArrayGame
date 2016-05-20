@@ -21,4 +21,13 @@ public class Enemy {
         this.symbol = symbol;
         isAlive = true;
     }
+    
+    public int move(int player, int enemy) {
+        if (enemy < player) {
+            enemy += 1;
+        } else if (enemy > player) {
+            enemy -= 1;
+        }
+        return enemy;
+    }
 }
