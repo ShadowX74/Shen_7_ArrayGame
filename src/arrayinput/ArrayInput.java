@@ -7,6 +7,8 @@ package arrayinput;
 
 import java.util.Scanner;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ArrayInput {
     //ADD FAKE TRAP THAT LOOKS LIKE A CHEST
@@ -46,7 +48,11 @@ public class ArrayInput {
             makeChests();
             makeEnemies();
             while (play) {
-                levelOne();
+                try {
+                    levelOne();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ArrayInput.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
             playAgain();
         }
@@ -74,7 +80,8 @@ public class ArrayInput {
         }
     }
     
-    private static void levelOne() {
+    private static void levelOne() throws InterruptedException {
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 if (i == player.x && j == player.y) {
@@ -95,17 +102,17 @@ public class ArrayInput {
                     }
                 }
 
-                for (int[] array : traps) {
-                    if (i == array[0] && j == array[1]) {
-                        map[i][j] = '*';
-                    }
-                }
-                
                 for (Enemy e : enemies) {
                     if (e.isAlive) {
                         if (i == e.x && j == e.y) {
                             map[i][j] = e.symbol;
                         }
+                    }
+                }
+                
+                for (int[] array : traps) {
+                    if (i == array[0] && j == array[1]) {
+                        map[i][j] = '*';
                     }
                 }
                 
@@ -116,8 +123,10 @@ public class ArrayInput {
 
         System.out.println("Exp: " + player.xp);
         System.out.println("Level: " + player.level);
+        System.out.println("");
+        Thread.sleep(1000);
+        
         move();
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         
         if (isDead(player.x, player.y) == false) {
             play = false;
@@ -140,7 +149,7 @@ public class ArrayInput {
 
     private static void move() {
         movePlayer();
-        
+
         for (Enemy e : enemies) {
             e.isAlive = enemyAlive(e.x, e.y);
         }
@@ -321,6 +330,14 @@ public class ArrayInput {
     private static void checkLevel() {
         if (player.xp == 100 * player.level) {
             levelUp();
+        }
+        if (player.level == 3) {
+            System.out.println("New Icon Unlocked ('@')");
+            player.symbol = '@';
+        }
+        if (player.level == 5) {
+            System.out.println("New Icon Unlocked ('H')");
+            player.symbol = 'H';
         }
     }
     
