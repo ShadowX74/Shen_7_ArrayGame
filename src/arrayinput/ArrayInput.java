@@ -46,7 +46,7 @@ public class ArrayInput {
             makeChests();
             makeEnemies();
             while (play) {
-                runGame();
+                levelOne();
             }
             playAgain();
         }
@@ -74,10 +74,10 @@ public class ArrayInput {
         }
     }
     
-    private static void runGame() {
+    private static void levelOne() {
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
-                if (i == player.x - 1 && j == player.y - 1) {
+                if (i == player.x && j == player.y) {
                     map[i][j] = player.symbol;
                 } else if (i == 0 || i == 50 || j == 0 || j == 50) {
                     map[i][j] = 'X';
@@ -114,9 +114,11 @@ public class ArrayInput {
             System.out.println("");
         }
 
+        System.out.println("Exp: " + player.xp);
+        System.out.println("Level: " + player.level);
         move();
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-
+        
         if (isDead(player.x, player.y) == false) {
             play = false;
         }
@@ -129,6 +131,8 @@ public class ArrayInput {
 
         chestFound(player.x, player.y);
 
+        checkLevel();
+        
         if (isWon()) {
             play = false;
         }
@@ -198,9 +202,7 @@ public class ArrayInput {
 
     private static boolean isDead(int pX, int pY) {
         for (Enemy e : enemies) {
-            System.out.println("checked one enemy");
             if (e.x == pX && e.y == pY) {
-                System.out.println("dead");
                 System.out.println(" __   __                        _                           _     _     _             _   _                                               __   _____  _   _   _     ___  ____ _____ \n"
                     + " \\ \\ / /__  _   _    __ _  ___ | |_    ___ __ _ _   _  __ _| |__ | |_  | |__  _   _  | |_| |__   ___    ___ _ __   ___ _ __ ___  _   _    \\ \\ / / _ \\| | | | | |   / _ \\/ ___|_   _|\n"
                     + "  \\ V / _ \\| | | |  / _` |/ _ \\| __|  / __/ _` | | | |/ _` | '_ \\| __| | '_ \\| | | | | __| '_ \\ / _ \\  / _ \\ '_ \\ / _ \\ '_ ` _ \\| | | |    \\ V / | | | | | | | |  | | | \\___ \\ | |  \n"
@@ -215,7 +217,7 @@ public class ArrayInput {
 
     private static void isTrapped(int pX, int pY) {
         for (int[] trap : traps) {
-            if (pX == trap[0] + 1 && pY == trap[1] + 1) {
+            if (pX == trap[0] && pY == trap[1]) {
                 System.out.println("Ouch! -50 health!");
                 player.health -= 50;
             }
@@ -223,10 +225,15 @@ public class ArrayInput {
     }
 
     private static boolean enemyAlive(int eX, int eY) {
+        if (eX == 0 && eY == 0) {
+            return false;
+        }
         for (int[] trap : traps) {
-            if (eX == trap[0] + 1 && eY == trap[1] + 1) {
+            if (eX == trap[0] && eY == trap[1]) {
                 System.out.println("You killed an enemy. + 5 Points");
+                System.out.println("+ 100 Exp");
                 player.score += 5;
+                player.xp += 100;
                 return false;
             }
         }
@@ -248,12 +255,12 @@ public class ArrayInput {
 
     private static boolean isWon() {
         if (player.score == 15) {
-            System.out.println(" __   __             __                       _         _ _   _   _                 _               _                         _                                      _ _ \n"
-                    + " \\ \\ / /__  _   _   / _| ___  _   _ _ __   __| |   __ _| | | | |_| |__   ___    ___| |__   ___  ___| |_ ___    __ _ _ __   __| |   ___  ___  ___ __ _ _ __   ___  __| | |\n"
-                    + "  \\ V / _ \\| | | | | |_ / _ \\| | | | '_ \\ / _` |  / _` | | | | __| '_ \\ / _ \\  / __| '_ \\ / _ \\/ __| __/ __|  / _` | '_ \\ / _` |  / _ \\/ __|/ __/ _` | '_ \\ / _ \\/ _` | |\n"
-                    + "   | | (_) | |_| | |  _| (_) | |_| | | | | (_| | | (_| | | | | |_| | | |  __/ | (__| | | |  __/\\__ \\ |_\\__ \\ | (_| | | | | (_| | |  __/\\__ \\ (_| (_| | |_) |  __/ (_| |_|\n"
-                    + "   |_|\\___/ \\__,_| |_|  \\___/ \\__,_|_| |_|\\__,_|  \\__,_|_|_|  \\__|_| |_|\\___|  \\___|_| |_|\\___||___/\\__|___/  \\__,_|_| |_|\\__,_|  \\___||___/\\___\\__,_| .__/ \\___|\\__,_(_)\n"
-                    + "                                                                                                                                                     |_|                 ");
+            System.out.println(" __   __            _                _     _   _     _       _                _ _ \n" +
+" \\ \\ / /__  _   _  | |__   ___  __ _| |_  | |_| |__ (_)___  | | _____   _____| | |\n" +
+"  \\ V / _ \\| | | | | '_ \\ / _ \\/ _` | __| | __| '_ \\| / __| | |/ _ \\ \\ / / _ \\ | |\n" +
+"   | | (_) | |_| | | |_) |  __/ (_| | |_  | |_| | | | \\__ \\ | |  __/\\ V /  __/ |_|\n" +
+"   |_|\\___/ \\__,_| |_.__/ \\___|\\__,_|\\__|  \\__|_| |_|_|___/ |_|\\___| \\_/ \\___|_(_)\n" +
+"                                                                                  ");
             System.out.println(" __   __           __        ___       _ \n"
                     + " \\ \\ / /__  _   _  \\ \\      / (_)_ __ | |\n"
                     + "  \\ V / _ \\| | | |  \\ \\ /\\ / /| | '_ \\| |\n"
@@ -267,11 +274,13 @@ public class ArrayInput {
 
     private static void chestFound(int pX, int pY) {
         for (int[] chest : chests) {
-            if (pX == chest[0] + 1 && pY == chest[1] + 1) {
+            if (pX == chest[0] && pY == chest[1]) {
                 chest[0] = 0;
                 chest[1] = 0;
                 System.out.println("You found a chest. + 5 Points");
+                System.out.println("+ 100 Exp");
                 player.score += 5;
+                player.xp += 100;
             }
         }
     }
@@ -288,6 +297,8 @@ public class ArrayInput {
             enemy2Alive = true;
             player.x = 25;
             player.y = 25;
+            player.xp = 0;
+            player.level = 1;
         }
     }
 
@@ -305,5 +316,17 @@ public class ArrayInput {
         System.out.println("Would you like to play? (y/n)");
         String answer = scan.next();
         play = answer.toLowerCase().contains("y");
+    }
+    
+    private static void checkLevel() {
+        if (player.xp == 100 * player.level) {
+            levelUp();
+        }
+    }
+    
+    private static void levelUp() {
+        player.xp = 0;
+        player.level += 1;
+        System.out.println("You leveled up! You are now level " + player.level + ".");
     }
 }
