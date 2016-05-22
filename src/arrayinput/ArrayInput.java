@@ -31,7 +31,7 @@ public class ArrayInput {
     static int[][] traps = new int[7][2];
     static int[][] chests = new int[3][2];
     static BasicEnemy[] basicEnemies = new BasicEnemy[3];
-    static AdvancedEnemy[] advancedEnemies = new AdvancedEnemy[2];
+    static AdvancedEnemy[] advancedEnemies = new AdvancedEnemy[10];
     
     static Player player = new Player("Hero", 25, 25, 'U');
     
@@ -45,26 +45,33 @@ public class ArrayInput {
     public static void game() {
         intro();
         while (play) {
-            makeTraps();
-            makeChests();
-            makeEnemies();
-            betterEnemies();
+            setup();
             while (play) {
                 try {
                     levelOne();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(ArrayInput.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                try {
-                    levelTwo();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(ArrayInput.class.getName()).log(Level.SEVERE, null, ex);
+                if (gameLevel == 2) {
+                    setup();
+                    try {
+                        levelTwo();
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ArrayInput.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
             playAgain();
         }
     }
 
+    private static void setup() {
+        makeTraps();
+        makeChests();
+        makeEnemies();
+        betterEnemies();
+    }
+    
     private static void makeTraps() {
         for (int[] array : traps) {
             for (int i = 0; i < array.length; i++) {
@@ -88,13 +95,12 @@ public class ArrayInput {
     }
     
     private static void betterEnemies() {
-        for (int i = 0; i < advancedEnemies.length; i ++) {
+        for (int i = 0; i < gameLevel && i < advancedEnemies.length; i ++) {
             advancedEnemies[i] = new AdvancedEnemy(rand.nextInt(49) + 1,rand.nextInt(49) + 1, 'E', 1);
         }
     }
     
     private static void levelOne() throws InterruptedException {
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         for (int i = 0; i < map.length; i++) {
             for (int j = 0; j < map[i].length; j++) {
                 if (i == player.x && j == player.y) {
@@ -134,13 +140,13 @@ public class ArrayInput {
             System.out.println("");
         }
 
-        System.out.println("Exp: " + player.xp);
-        System.out.println("Level: " + player.level);
-        System.out.println("");
+        System.out.println("Exp: " + player.xp + "     Level: " + player.level);
+        System.out.println("Score: " + player.score);
         Thread.sleep(500);
         
         move();
         
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         if (isDead(player.x, player.y) == false) {
             play = false;
         }
@@ -155,7 +161,7 @@ public class ArrayInput {
 
         checkLevel();
         
-        if (isWon()) {
+        if (isWon(15)) {
             gameLevel += 1;
             play = false;
         }
@@ -223,7 +229,7 @@ public class ArrayInput {
 
         checkLevel();
         
-        if (isWon()) {
+        if (isWon(20)) {
             gameLevel += 1;
             play = false;
         }
@@ -355,8 +361,8 @@ public class ArrayInput {
         return false;
     }
 
-    private static boolean isWon() {
-        if (player.score == 20) {
+    private static boolean isWon(int points) {
+        if (player.score == points) {
             System.out.println(" __   __            _                _     _   _     _       _                _ _ \n" +
 " \\ \\ / /__  _   _  | |__   ___  __ _| |_  | |_| |__ (_)___  | | _____   _____| | |\n" +
 "  \\ V / _ \\| | | | | '_ \\ / _ \\/ _` | __| | __| '_ \\| / __| | |/ _ \\ \\ / / _ \\ | |\n" +
@@ -439,9 +445,5 @@ public class ArrayInput {
         player.xp = 0;
         player.level += 1;
         System.out.println("You leveled up! You are now level " + player.level + ".");
-    }
-    
-    private static void levelUp() {
-        
     }
 }

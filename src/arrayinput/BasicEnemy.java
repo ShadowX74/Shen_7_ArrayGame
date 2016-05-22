@@ -15,5 +15,6 @@ public class BasicEnemy extends Enemy{
     public BasicEnemy(int x, int y, char symbol, int move) {
         super(x, y, symbol);
         this.movelength = move;
+        this.isAlive = true;
     }
 }
