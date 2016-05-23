@@ -9,12 +9,12 @@ package arrayinput;
  *
  * @author ShadowX
  */
-public class BasicEnemy extends Enemy{
+public class BasicEnemy extends Enemy{ //second Enemy Class 5 pts
 
     
-    public BasicEnemy(int x, int y, char symbol, int move) {
+    public BasicEnemy(int x, int y, char symbol) {
         super(x, y, symbol);
-        this.movelength = move;
+        this.movelength = 1;
         this.isAlive = true;
     }
 }

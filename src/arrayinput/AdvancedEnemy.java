@@ -9,11 +9,11 @@ package arrayinput;
  *
  * @author ShadowX
  */
-public class AdvancedEnemy extends Enemy{
+public class AdvancedEnemy extends Enemy{ //Usage of subclass 7 pts
 
-    public AdvancedEnemy(int x, int y, char symbol, int move) {
+    public AdvancedEnemy(int x, int y, char symbol) {
         super(x, y, symbol);
-        this.movelength = move;
+        this.movelength = 2;
         this.isAlive = true;
     }
 }

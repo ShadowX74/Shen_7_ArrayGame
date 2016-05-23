@@ -9,7 +9,7 @@ package arrayinput;
  *
  * @author ShadowX
  */
-public class TreasureChests {
+public class TreasureChests { //Treasure chest class with vaired loot
     int x, y;
     boolean isLost;
     String powerUp;

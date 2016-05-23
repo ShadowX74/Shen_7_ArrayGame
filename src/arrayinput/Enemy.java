@@ -9,7 +9,7 @@ package arrayinput;
  *
  * @author ShadowX
  */
-public class Enemy {
+public class Enemy { //Created Enemy Class 5 pts
     int x, y;
     int health = 100;
     boolean isAlive;
@@ -29,5 +29,14 @@ public class Enemy {
             enemy -= movelength;
         }
         return enemy;
+    }
+    
+    public boolean movedirection(int player, int enemy) {
+        if (enemy < player) {
+            return true;
+        } else if (enemy > player) {
+            return false;
+        }
+        return true;
     }
 }
