@@ -10,8 +10,10 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//72 pts
+//82 pts
 //Remove add score in move
+//Give points when enemy runs into u
+
 public class ArrayInput {
     
     public static final String ANSI_RESET = "\u001B[0m";
@@ -256,6 +258,7 @@ public class ArrayInput {
         if (isSecondWon(20)) {
             gameLevel += 1;
             play = false;
+            Thread.sleep(2000);
         }
     }
 
@@ -306,6 +309,14 @@ public class ArrayInput {
         }
         return valid;
     }
+    
+    private static boolean checkTraps(int a, int b) {
+        boolean valid = true;
+        if (map[a][b] == '*') {
+            valid = false;
+        }
+        return valid;
+    }
 
     private static void moveEnemy() {
         if (gameLevel == 1) {
@@ -338,22 +349,31 @@ public class ArrayInput {
         } else if (gameLevel == 2) {
             for (AdvancedEnemy e : advancedEnemies) {
                 if (e.isAlive) {
+                                        //enemy avoids traps 5 pts
                     if (e.movedirection(player.x, e.x)) {
                         if (checkWalls(e.x + e.movelength, e.y)) {
-                            e.x = e.move(player.x, e.x);
+                            if (checkTraps(e.x + e.movelength, e.y)) {
+                                e.x = e.move(player.x, e.x);
+                            }
                         }
                     } else if (!e.movedirection(player.x, e.x)) {
                         if (checkWalls(e.x - e.movelength, e.y)) {
-                            e.x = e.move(player.x, e.x);
+                            if (checkTraps(e.x - e.movelength, e.y)) {
+                                e.x = e.move(player.x, e.x);
+                            }
                         }
                     }
                     if (e.movedirection(player.y, e.y)) {
                         if (checkWalls(e.y + e.movelength, e.x)) {
-                           e.y = e.move(player.y, e.y);
+                            if (checkTraps(e.y + e.movelength, e.x)) {
+                                e.y = e.move(player.y, e.y);
+                            }
                         }
                     } else if (!e.movedirection(player.y, e.y)) {
                         if (checkWalls(e.y - e.movelength, e.x)) {
-                            e.y = e.move(player.y, e.y);
+                            if (checkWalls(e.y - e.movelength, e.x)) {
+                                e.y = e.move(player.y, e.y);
+                            }
                         }
                     }
                 } else {
@@ -426,6 +446,7 @@ public class ArrayInput {
         return false;
     }
 
+    //story w/ ascii
     private static boolean isLevelWon(int points) {
         if (player.score == points) {
             System.out.println(" __   __            _                _     _   _     _       _                _ _ \n" +
@@ -434,6 +455,60 @@ public class ArrayInput {
 "   | | (_) | |_| | | |_) |  __/ (_| | |_  | |_| | | | \\__ \\ | |  __/\\ V /  __/ |_|\n" +
 "   |_|\\___/ \\__,_| |_.__/ \\___|\\__,_|\\__|  \\__|_| |_|_|___/ |_|\\___| \\_/ \\___|_(_)\n" +
 "                                                                                  ");
+            System.out.println("Slowly, the ground begins to rumble.");
+            System.out.println("You unsteadily walk to the side of the room, wary.");
+            System.out.println("A staircase appears, and you descend.");
+            System.out.println("yyyysyyssyyssssssssss+++++++++++ooooooosooshhhhhhhhhhhhhhhdmmmmdhhhhyyyysssyhyyssysssssooosoooooosos\n" +
+"yyysssoooyyyssooooooss++++++oooossssyyyyhhdmNNNmmmmmmmmmmmmNmmmmmmmmddhhhhdmmmddhhyysyssssssssssysoo\n" +
+"yyssssooossssoooo+oosso+ooooosyyyhhhhddddmmmNNNNNmmmmNNNNNNNmmNmmmmmmmNmmmmmmmmmmddhhyyyhyysosyssooo\n" +
+"sssssssooo+sssoo+o+/+ooooossshddmmmmmNNNNNNNNNNNNmmmmNmNNNNmmmNmmmmmmmNNNmNmmmmmmmmmddhyhddhhhyyysso\n" +
+"sssyysssoo++oso++//++osossyhhdNNNNNNNNNNNNNNNNNmmmmmmmmNNNNmmmmmmmmmmNNNNNmmmmmmmmmmmmmddddmmmmdyyys\n" +
+"ssssyysoooo++oo+/++oosyhyhhdmmmNNNNNNNNNNNNNNNmmmmmmmmmNNNNmmmmmmmmmmNNNNmmmmmmmmmmmmmNNNmmmmmmmmdhy\n" +
+"syyssssss++///+s+osyhdddmmmNNNmNNNNNNNNNNNNNNNmmmmmmmmNNNNmmmmmmmmmmNNNNmmmmmmmmmmmmmNNNNNmmmmmmmmmd\n" +
+"sysssssoo+/////oshdmmNNNNNNNNNNNNNmNNNNmmNNNNNmmmmmmmmNNNNmmmmmmmmmmNNNmmmmmmmmmmmmmNNNNmmmmmmmmmmmm\n" +
+"yssso++++oo+//+oydmNmNNNNNNNNNNNNNmmmmmmmNNNNNmmmmmmmmNNNmmmmmmmmmmmmmmmmmmmmmmmmmmNNNmmmmmmmmmmmmmm\n" +
+"syyso++++ossooshddmNNNNNNNNNNNNNNNNmmmmmmmmNNNmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmhdmmmmmmmmm\n" +
+"sssssooooooyyhddmNNNNNNNNNNNmmNNNNNmmmmmmmmNNNmmmddmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmdmddddmmmmmmm\n" +
+"ssossssoosyhdmNNNNNNNNNNNNNNmmmmNNNNmmmmmmmmmmmmmmmmmmmmmmmmmmmmmNmmmmmmmmmmmmmmmmmmmmmmmmmdmmmmdmmm\n" +
+"sosssssoyhdmNNNNNNNNNNNNNNNNmmmmmNNNmmmmmmmmmmmmmmmmmmNmmmdmmmmmNNmddmmmmmmmmNmmmdmmmmmmmmmmmmmmmmmm\n" +
+"ossosoosdmNNNNNNNNNNNNNNNNNNmmmmmNNNNmmmmmmmmmmmmmmmmNNmddmmmmmNmddmmmmmmmmNmmmdddddddmmmmmmmmmmmmmm\n" +
+"ooooooshdmNNNNNNNNNNNNNNNNNNmmmmmmmmmmmmmmmmNNmdmmmmNNmddmmmmmNmddmmmmmmmmmmddddddddddmmmmmmmmmmmmmm\n" +
+"ooossyhdmNNNNNNNNNNNNNNNNNNNNNmmmmmmmmmmmmmNNNmdmmmmNmddmmmmmmddmmmmmmmmmdddddddddddmmmmmdddddddmmmm\n" +
+"ossyhddmNNNNNNNNNNNNNNmmmmNNNNmmmmmmmmmdmmmmNmdmmmmmmdddmmmmdddmmmmmmmmdddddddddddmmmmddddddddddddmm\n" +
+"ssyddmNNNNNNNNNNNNNNNNmmmmmmNmmmmmmmNNNdmmmmNddmdmmmddmdmmmdddddddmddddddddddddddddddddddddddddddddd\n" +
+"syddNNNNNNNNNNNNNNNNNNmmmmmmmmmmmmNmNNNdmmmmmdmmmmmmmmmmmmmdddmmmmmddddddddddddddddddddddddddddddddd\n" +
+"yydNNNNNNNNNNNNNNNNNNNNNmmdmmmmmmdNmNNNhmmmmmddhdhdddddsdddhhhdmmdmmmddddddddddddddddddddddddddddddd\n" +
+"sydmmNNNNNNNNNNNNNNNmNNNmdddddmNNdmmmmmmmdhyhddddhNNmmmdNNmddhhhhhhhdmmmmdhhhhhhddddddddddddddddddmm\n" +
+"shddmNNNNNNNNNNNNNNNNNmNmddhdmNmmdhmmdhyhhhhmNNNNNNNNNNNNNNNNmNNdddhdmdhdmdyyyhhddddddddddddmmmmmmmm\n" +
+"hddmNNNNNNNNNNNNNNNNNNmmmmdmdmmmdmdys+omNNNNNNNNNNNNmmNNNNNNNNNNNNmmdhdhddmmhhhdddddddmmmmmmmmdddddd\n" +
+"hdmNNNNNNNNNNNNNNNNNNNmmmdmmdhhddho/hmNNNNNNNNNmNNNmmNNNmmmNNNNNNNNNNddddmmmmmdddddddmmddddhhddddddh\n" +
+"dmNNNNNNNNNNNNNNNNNNNNmmddmmmmyhh/odNNNNNNNNNNNNNNNmNNNmmmNNNNmmNNNNNNmddhddmmmhyyyyyhhhdddddhhhhhhh\n" +
+"dNNNNNNNNNNNNNNNNNNNNmmmdddmhydy:yNNNNNmmmmmmmmmmmNmNNNNNNNmmmmNNNNNNNNNmhhhdmmmdyyyyhddddddhhdddddd\n" +
+"mmNNNNNNNNNNNNNNNNNNNmmdddhyydy:omNNNNmmmmmmdmNmmmdmmmdmmNNmmNNNmmmmNNNNNddhhmmmmmdhhhhddddddddmmmmm\n" +
+"dmmmNNNNNNNNNNNNNNNNNmmddmmdhy+oNNNNNmmhmmmdddddddddmddmddNmdmmmmmmmNNNNNmmdhmmddmmddddddmmmmmddmmmm\n" +
+"dmmmNNNNNNNNNNNNNNNNNmdddmdhhy:yNNNmmdmdyyhdmmmmmmmhhhdhdmmmmdmmmNNNNNNNNNNdhmdhhdmNdyyyhddddddddddd\n" +
+"dmmNNmNNNNNNNNNNNNNNNmdddyhyhh/mNNmdddyohddddhhhdddhddhhmddmmhymmmmmmmmNNNNdhmddddmmmyhyyhhhhhhhhhhh\n" +
+"dmmNNNNNNNNNNNNNNNmNNmdddddyhy:mNmdmhy+ddhyyhhhyyyyhysdhdmmmmhsdmmmmmmmNNNNdhdhddddmmhyyhhhhdhhhhhhh\n" +
+"ddNNNNNNNNNNNNNNNNNNNmdddhhyhy:mNmdhy+hhyysyhhhyyyyodyomhmmmmddmNmmmNNNNNNNNmdhddhhmddddhhhhdddddddd\n" +
+"hmmNmNmNNNNNNNNNNNNNNNddddhyyy+oNmdhy+hyoososyyyhyhsyd+ddmmmmmmNmmmmmmmNNNNNNyhhyyyddddddddddddddddm\n" +
+"ydmmNNNNNNNNNNNNNNNNNNmdddddyhs:dmdhsosyoso/+ss+yhhyhdhmdmNmmmmmmmmNNNNNNNNNdhhhhhhdmddyyyyhmmdddddd\n" +
+"sddmNNNNNNNNNNNNmNNNNNNdddddhyss/yhhyy/oooo++o+-syhydddmdNmmmmmmmmmmmNNNNNNmhhhhdddmmddysooshdddddmm\n" +
+"shddmNNNNmmmmNNNNNNNNmmmddddhyshs/oyhss+++o++oo:+yhddhddmmdddmmmmmmmmmNNNNNNmhyhdddddmdsososhhhhhhhh\n" +
+"sshdmmmmmmmmmmNNNNNNNNmmmddddddhss+:shhsy+o++os+ohhhhhdmmdhyhmmmmmmmNNNNNNNNhyyyhddddddhyyshhhhhhhhh\n" +
+"//+ydmmmmmmmmNmmmmmmmmmmmmddmdhyhyysoo+syyysssyyyyhhdmmmdhhdmmmmmmmmNNNNNNmhyhyyyyhmddhdhhddddhhhhhh\n" +
+":::ohmmmmNmmmmmmmmmmmmmmmmmmdmdddddsydhoooooyyyyhhdddmmdddmmmmNNmmmmmNNmNmhhhyhhhhdddhyyyydddddddddd\n" +
+":://oshhdmmmmmmmmmmmmmmmmmmmmddmdhhhhdmyyhhdhmddddddddddmmmmmmmmNNNNNNNNNmhyyhdddddddysssshhddhhhhhd\n" +
+"::---:+sydmmmmmmmmmmmmmmmmmmmmmmdmdddhhhhhhdddddhddddmmmmmmmmmmmmNNNNNNNNdyyhddddhhdyssoosyydddddhhh\n" +
+"-.----/oyhdmmmmmmmmmmmmmmmmmmmmmmmmmmmdddddddddmmmmNNNmmmmmmmmmmmmmNNNNmhyhhhyydhdddssooossyyhhddddd\n" +
+"---:--:-oyhdddmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmNNNNmmmmmmmmmmmmmNNNdyyyhhhhhddddddhhyssssyyyyyyhdd\n" +
+"/://::--./+oyhdmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmNNNmmmmmmmmmmmmmNNNNNdyssyhdhhhdddyhhhhhhhyyyyyyyyyh\n" +
+"o+/:---:----/syhddmmmmmmmmmmmmmmmmmmmmmmmmmmmmmNNNmmmmmmmmmmmmmNmmmdyooosyhhhyhhdysssyyyhhddhhyyyyyy\n" +
+"+//:----:--.--oyhdmmmddmmmmmmmmmmmmmmmmmmmmmmmNNNNmmmmmmmmmmmmmdhss+ooossyhdhhddhsssssoyhyhhdddddhhh\n" +
+"////:-:::-...:::shdhhdmmmmmmmmmmmmmmmmmmmmmmmNNmmmmmmmmmmmmmmmdssssooo+++sdhhddhyyssssshddhhhhhddddd\n" +
+"+//+++/:----:----//osyhmmmmmmmmNmmmmmmmmNmmmNNmmmmmmmmmmmmmmmmdysoo++oooooyhhhdhhyssssssyhddhyyyyhhd\n" +
+"+ooo+//:/-:::+/:/+:-/shhhmmmmmmmmmmNmmmNmNNNNmmmmmmmmddhhyssoo++++o++ossosyhdhhhhhysssssssyhdhhyyyyy\n" +
+"oo:://///::/+/:::::/+oosyhdmmhhdmmmmmNNmmNNNmmmmddddyooooooooo+++oo++ossyhhhyyyyhhyyyyssssssyhdhhyyy\n" +
+"oo//:://++o+::::--:+///+oshhyyyhdhhdmNmmhsyyyhhdhyyyssoo++++////++++osyyhhysssyyssyyhhyyysssssyhddhy");
             return true;
         }
         return false;
@@ -453,6 +528,12 @@ public class ArrayInput {
                     + "   | | (_) | |_| |   \\ V  V / | | | | |_|\n"
                     + "   |_|\\___/ \\__,_|    \\_/\\_/  |_|_| |_(_)\n"
                     + "                                         ");
+            System.out.println("As you finally conquer the second floor, a tile slides open on the ground with a rasp.");
+            System.out.println("A groan issues from the space, and a platform arises.");
+            System.out.println("On it, is a magnificent chest of ancient jewelry.");
+            System.out.println("You hop on as a hole appears in the ceiling.");
+            System.out.println("You soon reach the surface, and, not 20 feet away, is your camel.");
+            System.out.println("Thanking the deities above for your luck, you load your treasure and ride away.");
             return true;
         }
         return false;
@@ -513,10 +594,9 @@ public class ArrayInput {
                 + ANSI_RED +"   \\ V  V /  __/ | (_| (_) | | | | | |  __/ | || (_) | | |_| | | |  __/   | || | |  __/ (_| \\__ \\ |_| | | |  __/  / ___ \\| |  | | | (_| | |_| |\n"
                 + ANSI_RED +"    \\_/\\_/ \\___|_|\\___\\___/|_| |_| |_|\\___|  \\__\\___/   \\__|_| |_|\\___|   |_||_|  \\___|\\__,_|___/\\__,_|_|  \\___| /_/   \\_\\_|  |_|  \\__,_|\\__, |\n"
                 + ANSI_RED +"                                                                                                                                         |___/ " + ANSI_RESET);
-        System.out.println("You have been exploring the depths of the jungle, looking for ruins.");
+        System.out.println("You have been exploring throughout the desert, in search of treasure");
         System.out.println("You came upon an overgrown tunnel, and stepped inside.");
         System.out.println("As soon as you emerged into a large open space, the tunnel opening collapses.");
-        System.out.println("Perhaps the treasure might save you?");
         System.out.println("Would you like to play? (y/n)");
         String answer = scan.next();
         play = answer.toLowerCase().contains("y");
