@@ -15,6 +15,8 @@ public class Enemy { //Created Enemy Class 5 pts
     boolean isAlive;
     char symbol = 'E';
     int movelength;
+    int stuncounter;
+    boolean stun;
     
     Enemy(int x, int y, char symbol) {
         this.x = x;
@@ -38,5 +40,13 @@ public class Enemy { //Created Enemy Class 5 pts
             return false;
         }
         return true;
+    }
+    
+    public int attack(Enemy e, int level) {
+        if (level == 1) {
+            return 10;
+        } else {
+            return 20;
+        }
     }
 }
