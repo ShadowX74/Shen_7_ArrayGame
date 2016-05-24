@@ -271,7 +271,6 @@ public class ArrayInput {
 
         move();
 
-        //System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         isDead(player.x, player.y);
 
         isTrapped(player.x, player.y);
