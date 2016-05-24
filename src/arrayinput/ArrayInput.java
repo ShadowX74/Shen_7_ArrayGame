@@ -74,7 +74,7 @@ public class ArrayInput {
         makeEnemies();
         betterEnemies();
         counter = 0;
-        static int goal = rand.nextInt(6) + 10;
+        goal = rand.nextInt(6) + 10;
     }
 
     private static void makeTraps() {
