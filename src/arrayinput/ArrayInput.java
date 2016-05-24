@@ -113,7 +113,7 @@ public class ArrayInput {
     private static void betterEnemies() {
         for (int i = 0; i < advancedEnemies.length; i++) {
             advancedEnemies[i] = new AdvancedEnemy(rand.nextInt(49) + 1, rand.nextInt(49) + 1, 'A');
-            basicEnemies[i].isAlive = true;
+            advancedEnemies[i].isAlive = true;
         }
     }
 
