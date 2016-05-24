@@ -407,6 +407,7 @@ public class ArrayInput {
                             System.out.println("- 10 Health    + 100 Exp");
                             player.health -= 10;
                             player.xp += 100;
+                            player.score += 5;
                             e.isAlive = false;
                             e.x = 0;
                             e.y = 0;
@@ -461,6 +462,7 @@ public class ArrayInput {
                             System.out.println("- 30 Health    + 150 Exp");
                             player.health -= 30;
                             player.xp += 100;
+                            player.score += 5;
                             e.isAlive = false;
                             e.x = 0;
                             e.y = 0;
