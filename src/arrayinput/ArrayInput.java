@@ -27,8 +27,8 @@ public class ArrayInput {
     static Scanner scan = new Scanner(System.in);
     static Random rand = new Random();
     static boolean play = true;
-    static int counter = 0;
-    static int goal = rand.nextInt(6) + 4;
+    static int counter;
+    static int goal;
 
     static int gameLevel = 1;
     static char[][] map = new char[51][51];
@@ -73,6 +73,8 @@ public class ArrayInput {
         makeChests();
         makeEnemies();
         betterEnemies();
+        counter = 0;
+        static int goal = rand.nextInt(6) + 10;
     }
 
     private static void makeTraps() {
