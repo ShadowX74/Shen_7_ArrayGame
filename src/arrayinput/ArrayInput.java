@@ -11,7 +11,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ArrayInput {
-    //ADD FAKE TRAP THAT LOOKS LIKE A CHEST
     
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -27,12 +26,14 @@ public class ArrayInput {
     static Random rand = new Random();
     static boolean play = true;
     
+    static int gameLevel = 1;
     static char[][] map = new char[51][51];
     static int[][] traps = new int[7][2];
     static int[][] chests = new int[3][2];
-    static Enemy[] enemies = new Enemy[3];
+    static BasicEnemy[] basicEnemies = new BasicEnemy[3];
+    static AdvancedEnemy[] advancedEnemies = new AdvancedEnemy[2];
     
-    static Player player= new Player("Hero", 25, 25, 'U');
+    static Player player = new Player("Hero", 25, 25, 'U');
     
     static boolean enemyAlive = true;
     static boolean enemy2Alive = true;
@@ -47,9 +48,15 @@ public class ArrayInput {
             makeTraps();
             makeChests();
             makeEnemies();
+            betterEnemies();
             while (play) {
                 try {
                     levelOne();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ArrayInput.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                try {
+                    levelTwo();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(ArrayInput.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -75,8 +82,14 @@ public class ArrayInput {
     }
     
     private static void makeEnemies() {
-        for (int i = 0; i < enemies.length; i ++) {
-            enemies[i] = new Enemy(rand.nextInt(49) + 1,rand.nextInt(49) + 1, 'E');
+        for (int i = 0; i < basicEnemies.length; i ++) {
+            basicEnemies[i] = new BasicEnemy(rand.nextInt(49) + 1,rand.nextInt(49) + 1, 'E', 1);
+        }
+    }
+    
+    private static void betterEnemies() {
+        for (int i = 0; i < advancedEnemies.length; i ++) {
+            advancedEnemies[i] = new AdvancedEnemy(rand.nextInt(49) + 1,rand.nextInt(49) + 1, 'E', 1);
         }
     }
     
@@ -102,7 +115,7 @@ public class ArrayInput {
                     }
                 }
 
-                for (Enemy e : enemies) {
+                for (BasicEnemy e : basicEnemies) {
                     if (e.isAlive) {
                         if (i == e.x && j == e.y) {
                             map[i][j] = e.symbol;
@@ -124,7 +137,7 @@ public class ArrayInput {
         System.out.println("Exp: " + player.xp);
         System.out.println("Level: " + player.level);
         System.out.println("");
-        Thread.sleep(1000);
+        Thread.sleep(500);
         
         move();
         
@@ -143,6 +156,75 @@ public class ArrayInput {
         checkLevel();
         
         if (isWon()) {
+            gameLevel += 1;
+            play = false;
+        }
+    }
+    
+    private static void levelTwo() throws InterruptedException {
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[i].length; j++) {
+                if (i == player.x && j == player.y) {
+                    map[i][j] = player.symbol;
+                } else if (i == 0 || i == 50 || j == 0 || j == 50) {
+                    map[i][j] = 'X';
+                } else {
+                    map[i][j] = '.';
+                }
+                
+                for (int[] array : chests) {
+                    if (i == array[0] && j == array[1]) {
+                        if (0 == array[0] && 0 == array[1]) {
+                            map[i][j] = 'X';
+                        } else {
+                            map[i][j] = 'T';
+                        }
+                    }
+                }
+
+                for (BasicEnemy e : basicEnemies) {
+                    if (e.isAlive) {
+                        if (i == e.x && j == e.y) {
+                            map[i][j] = e.symbol;
+                        }
+                    }
+                }
+                
+                for (int[] array : traps) {
+                    if (i == array[0] && j == array[1]) {
+                        map[i][j] = '*';
+                    }
+                }
+                
+                System.out.print(map[i][j] + " ");
+            }
+            System.out.println("");
+        }
+
+        System.out.println("Exp: " + player.xp);
+        System.out.println("Level: " + player.level);
+        System.out.println("");
+        Thread.sleep(500);
+        
+        move();
+        
+        if (isDead(player.x, player.y) == false) {
+            play = false;
+        }
+
+        isTrapped(player.x, player.y);
+
+        if (healthDead()) {
+            play = false;
+        }
+
+        chestFound(player.x, player.y);
+
+        checkLevel();
+        
+        if (isWon()) {
+            gameLevel += 1;
             play = false;
         }
     }
@@ -150,7 +232,7 @@ public class ArrayInput {
     private static void move() {
         movePlayer();
 
-        for (Enemy e : enemies) {
+        for (BasicEnemy e : basicEnemies) {
             e.isAlive = enemyAlive(e.x, e.y);
         }
         
@@ -161,22 +243,22 @@ public class ArrayInput {
         System.out.println("What direction would you like to move? (N/E/S/W/NE/SE/NW/SW) Or (Q) to quit.");
         String input = scan.next().toUpperCase();
         if (input.contains("N")) {
-            if (projected(player.x - 2, player.y)) {
+            if (checkBoundaries(player.x - 2, player.y)) {
                 player.x -= 1;
             }
         }
         if (input.contains("E")) {
-            if (projected(player.y + 2, player.x)) {
+            if (checkBoundaries(player.y + 2, player.x)) {
                 player.y += 1;
             }
         }
         if (input.contains("S")) {
-            if (projected(player.x + 2, player.y)) {
+            if (checkBoundaries(player.x + 2, player.y)) {
                 player.x += 1;
             }
         }
         if (input.contains("W")) {
-            if (projected(player.y - 2, player.x)) {
+            if (checkBoundaries(player.y - 2, player.x)) {
                 player.y -= 1;
             }
         }
@@ -186,19 +268,19 @@ public class ArrayInput {
         }
     }
 
-    private static boolean projected(int a, int b) {
+    private static boolean checkBoundaries(int a, int b) {
         boolean valid = true;
-        if (a <= 0 || a > 51) {
+        if (a <= 0 || a > map.length) {
             valid = false;
         }
-        if (b <= 0 || b > 51) {
+        if (b <= 0 || b > map.length) {
             valid = false;
         }
         return valid;
     }
 
     private static void moveEnemy() {
-        for (Enemy e : enemies) {
+        for (BasicEnemy e : basicEnemies) {
             if (e.isAlive) {
                 e.x = e.move(player.x, e.x);
                 e.y = e.move(player.y, e.y);
@@ -207,10 +289,21 @@ public class ArrayInput {
                 e.y = 0;
             }
         }
+        if (gameLevel == 2) {
+            for (AdvancedEnemy e : advancedEnemies) {
+                if (e.isAlive) {
+                    e.x = e.move(player.x, e.x);
+                    e.y = e.move(player.y, e.y);
+                } else {
+                    e.x = 0;
+                    e.y = 0;
+                }
+            }
+        }
     }
 
     private static boolean isDead(int pX, int pY) {
-        for (Enemy e : enemies) {
+        for (BasicEnemy e : basicEnemies) {
             if (e.x == pX && e.y == pY) {
                 System.out.println(" __   __                        _                           _     _     _             _   _                                               __   _____  _   _   _     ___  ____ _____ \n"
                     + " \\ \\ / /__  _   _    __ _  ___ | |_    ___ __ _ _   _  __ _| |__ | |_  | |__  _   _  | |_| |__   ___    ___ _ __   ___ _ __ ___  _   _    \\ \\ / / _ \\| | | | | |   / _ \\/ ___|_   _|\n"
@@ -263,7 +356,7 @@ public class ArrayInput {
     }
 
     private static boolean isWon() {
-        if (player.score == 15) {
+        if (player.score == 20) {
             System.out.println(" __   __            _                _     _   _     _       _                _ _ \n" +
 " \\ \\ / /__  _   _  | |__   ___  __ _| |_  | |_| |__ (_)___  | | _____   _____| | |\n" +
 "  \\ V / _ \\| | | | | '_ \\ / _ \\/ _` | __| | __| '_ \\| / __| | |/ _ \\ \\ / / _ \\ | |\n" +
@@ -295,7 +388,7 @@ public class ArrayInput {
     }
 
     private static void playAgain() {
-        System.out.println("Score:" + player.score);
+        System.out.println("Score: " + player.score);
         System.out.println("Would you like to play again? (y/n)");
         String answer = scan.next();
         if (answer.toLowerCase().contains("y")) {
@@ -308,6 +401,7 @@ public class ArrayInput {
             player.y = 25;
             player.xp = 0;
             player.level = 1;
+            gameLevel = 1;
         }
     }
 
@@ -329,21 +423,25 @@ public class ArrayInput {
     
     private static void checkLevel() {
         if (player.xp == 100 * player.level) {
-            levelUp();
+            playerLevelUp();
         }
         if (player.level == 3) {
-            System.out.println("New Icon Unlocked ('@')");
-            player.symbol = '@';
-        }
-        if (player.level == 5) {
             System.out.println("New Icon Unlocked ('H')");
             player.symbol = 'H';
         }
+        if (player.level == 5) {
+            System.out.println("New Icon Unlocked ('@')");
+            player.symbol = '@';
+        }
     }
     
-    private static void levelUp() {
+    private static void playerLevelUp() {
         player.xp = 0;
         player.level += 1;
         System.out.println("You leveled up! You are now level " + player.level + ".");
+    }
+    
+    private static void levelUp() {
+        
     }
 }

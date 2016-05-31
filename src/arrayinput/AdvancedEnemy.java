@@ -11,7 +11,8 @@ package arrayinput;
  */
 public class AdvancedEnemy extends Enemy{
 
-    public AdvancedEnemy(int x, int y, char symbol) {
+    public AdvancedEnemy(int x, int y, char symbol, int move) {
         super(x, y, symbol);
+        this.movelength = move;
     }
 }

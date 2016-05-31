@@ -14,6 +14,7 @@ public class Enemy {
     int health = 100;
     boolean isAlive;
     char symbol = 'E';
+    int movelength;
     
     Enemy(int x, int y, char symbol) {
         this.x = x;
@@ -21,12 +22,11 @@ public class Enemy {
         this.symbol = symbol;
         isAlive = true;
     }
-    
     public int move(int player, int enemy) {
         if (enemy < player) {
-            enemy += 1;
+            enemy += movelength;
         } else if (enemy > player) {
-            enemy -= 1;
+            enemy -= movelength;
         }
         return enemy;
     }
